@@ -1,0 +1,13 @@
+{
+  "name": "task-api",
+  "version": "1.0.0",
+  "description": "Simple Month 2 Node API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
