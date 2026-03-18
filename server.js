@@ -1,9 +1,28 @@
-require("dotenv").config();
-const express = require("express");
+// Load dotenv only if available (safe for production)
+try {
+  require("dotenv").config();
+} catch (e) {
+  console.log("dotenv not loaded (running without .env)");
+}
 
+const express = require("express");
 const app = express();
+
 app.use(express.json());
 
+/* =========================
+   ENV CONFIG
+========================= */
+const PORT = process.env.PORT || 3000;
+const APP_NAME = process.env.APP_NAME || "Task API";
+const NODE_ENV = process.env.NODE_ENV || "development";
+
+console.log("Starting server...");
+console.log("Environment:", NODE_ENV);
+
+/* =========================
+   IN-MEMORY DATA
+========================= */
 let tasks = [
   {
     id: 1,
@@ -23,7 +42,9 @@ let tasks = [
    REQUEST LOGGER
 ========================= */
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} | ${req.method} ${req.originalUrl}`);
+  console.log(
+    `${new Date().toISOString()} | ${req.method} ${req.originalUrl}`
+  );
   next();
 });
 
@@ -33,7 +54,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: `${process.env.APP_NAME} is running 🚀`,
+    message: `${APP_NAME} is running 🚀`,
   });
 });
 
@@ -41,7 +62,7 @@ app.get("/health", (req, res) => {
   res.json({
     success: true,
     ok: true,
-    environment: process.env.NODE_ENV,
+    environment: NODE_ENV,
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
@@ -53,14 +74,14 @@ app.get("/health", (req, res) => {
 
 // GET all tasks
 app.get("/tasks", (req, res) => {
-  res.status(200).json({
+  res.json({
     success: true,
     count: tasks.length,
     data: tasks,
   });
 });
 
-// GET one task by id
+// GET one task
 app.get("/tasks/:id", (req, res) => {
   const taskId = Number(req.params.id);
 
@@ -71,7 +92,7 @@ app.get("/tasks/:id", (req, res) => {
     });
   }
 
-  const task = tasks.find((item) => item.id === taskId);
+  const task = tasks.find((t) => t.id === taskId);
 
   if (!task) {
     return res.status(404).json({
@@ -80,13 +101,13 @@ app.get("/tasks/:id", (req, res) => {
     });
   }
 
-  res.status(200).json({
+  res.json({
     success: true,
     data: task,
   });
 });
 
-// POST create task
+// CREATE task
 app.post("/tasks", (req, res) => {
   const { title, completed } = req.body;
 
@@ -108,12 +129,12 @@ app.post("/tasks", (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: "Task created successfully",
+    message: "Task created",
     data: newTask,
   });
 });
 
-// PUT update task
+// UPDATE task
 app.put("/tasks/:id", (req, res) => {
   const taskId = Number(req.params.id);
 
@@ -124,7 +145,7 @@ app.put("/tasks/:id", (req, res) => {
     });
   }
 
-  const task = tasks.find((item) => item.id === taskId);
+  const task = tasks.find((t) => t.id === taskId);
 
   if (!task) {
     return res.status(404).json({
@@ -139,7 +160,7 @@ app.put("/tasks/:id", (req, res) => {
     if (typeof title !== "string" || !title.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Title must be a non-empty string",
+        message: "Invalid title",
       });
     }
     task.title = title.trim();
@@ -149,15 +170,15 @@ app.put("/tasks/:id", (req, res) => {
     if (typeof completed !== "boolean") {
       return res.status(400).json({
         success: false,
-        message: "Completed must be a boolean",
+        message: "Completed must be boolean",
       });
     }
     task.completed = completed;
   }
 
-  res.status(200).json({
+  res.json({
     success: true,
-    message: "Task updated successfully",
+    message: "Task updated",
     data: task,
   });
 });
@@ -173,21 +194,21 @@ app.delete("/tasks/:id", (req, res) => {
     });
   }
 
-  const taskIndex = tasks.findIndex((item) => item.id === taskId);
+  const index = tasks.findIndex((t) => t.id === taskId);
 
-  if (taskIndex === -1) {
+  if (index === -1) {
     return res.status(404).json({
       success: false,
       message: "Task not found",
     });
   }
 
-  const deletedTask = tasks.splice(taskIndex, 1)[0];
+  const deleted = tasks.splice(index, 1)[0];
 
-  res.status(200).json({
+  res.json({
     success: true,
-    message: "Task deleted successfully",
-    data: deletedTask,
+    message: "Task deleted",
+    data: deleted,
   });
 });
 
@@ -202,10 +223,20 @@ app.use((req, res) => {
 });
 
 /* =========================
+   GLOBAL ERROR HANDLER
+========================= */
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message);
+
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
+
+/* =========================
    START SERVER
 ========================= */
-const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
