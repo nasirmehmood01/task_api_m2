@@ -313,26 +313,6 @@ function renderHomePage() {
       </div>
     </section>
 
-    <section class="bottom-grid">
-      <div class="card small-card">
-        <span class="icon">🤲</span>
-        <h3>Blessings</h3>
-        <p>Allah kare is Eid te har ghar wich sukoon, rehmat te barkat hove.</p>
-      </div>
-
-      <div class="card small-card">
-        <span class="icon">🏡</span>
-        <h3>Family</h3>
-        <p>Chahe fasla kinna vi hove, Eid di اصل khushi hamesha family naal hondi ae.</p>
-      </div>
-
-      <div class="card small-card">
-        <span class="icon">✨</span>
-        <h3>Togetherness</h3>
-        <p>Pardes wich vi duawan te yaadan apneyan nu dil de qareeb rakhdiyaan ne.</p>
-      </div>
-    </section>
-
     <div class="footer">
       Eid Mubarak from Nasir Mehmood
     </div>
