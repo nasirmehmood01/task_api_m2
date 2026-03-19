@@ -22,7 +22,7 @@ console.log("Starting server...");
 console.log("PORT:", PORT);
 console.log("Environment:", NODE_ENV);
 console.log("Task API:", APP_NAME);
-console.log("USER:", ENV_USER);
+console.log("USER:", USER_ENV);
 /* =========================
    IN-MEMORY DATA
 ========================= */
