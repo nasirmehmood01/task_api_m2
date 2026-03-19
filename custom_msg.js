@@ -1,54 +1,15 @@
-// Load dotenv only if available (safe for production)
+// Load dotenv only if available
 try {
   require("dotenv").config();
 } catch (e) {
-  console.log("dotenv not loaded (running without .env)");
+  console.log("dotenv not loaded");
 }
 
 const express = require("express");
 const app = express();
 
-app.use(express.json());
-
-/* =========================
-   ENV CONFIG
-========================= */
 const PORT = process.env.PORT || 3000;
-const APP_NAME = process.env.APP_NAME || "Task API";
-const NODE_ENV = process.env.NODE_ENV || "development";
 
-console.log("Starting server...");
-console.log("Environment:", NODE_ENV);
-
-/* =========================
-   IN-MEMORY DATA
-========================= */
-let tasks = [
-  {
-    id: 1,
-    title: "Launch EC2 instance",
-    completed: true,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    title: "Configure Nginx reverse proxy",
-    completed: false,
-    createdAt: new Date().toISOString(),
-  },
-];
-
-/* =========================
-   REQUEST LOGGER
-========================= */
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} | ${req.method} ${req.originalUrl}`);
-  next();
-});
-
-/* =========================
-   HTML PAGE
-========================= */
 function renderHomePage() {
   return `
 <!DOCTYPE html>
@@ -56,11 +17,8 @@ function renderHomePage() {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advance Eid Mubarak | Nasir Developer</title>
-  <meta
-    name="description"
-    content="A beautiful Eid Mubarak message for family with Punjabi poetry."
-  />
+  <title>Advance Eid Mubarak | Nasir Mehmood</title>
+  <meta name="description" content="A beautiful Eid Mubarak page for family." />
   <style>
     * {
       margin: 0;
@@ -69,13 +27,14 @@ function renderHomePage() {
     }
 
     :root {
-      --bg-1: #0f172a;
-      --bg-2: #111827;
+      --bg-1: #081225;
+      --bg-2: #0f172a;
+      --bg-3: #111827;
       --card: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.18);
+      --card-border: rgba(255, 255, 255, 0.16);
       --text: #f8fafc;
       --muted: #cbd5e1;
-      --accent: #f59e0b;
+      --accent: #fbbf24;
       --accent-2: #22c55e;
       --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     }
@@ -85,64 +44,67 @@ function renderHomePage() {
       min-height: 100vh;
       color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(245, 158, 11, 0.18), transparent 30%),
-        radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 28%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        radial-gradient(circle at top left, rgba(251, 191, 36, 0.15), transparent 28%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.10), transparent 28%),
+        radial-gradient(circle at bottom center, rgba(59, 130, 246, 0.12), transparent 30%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
       overflow-x: hidden;
+      position: relative;
     }
 
     .stars {
       position: fixed;
       inset: 0;
       pointer-events: none;
+      opacity: 0.45;
       background-image:
-        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(2px 2px at 140px 80px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1.5px 1.5px at 300px 160px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(2px 2px at 500px 50px, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1.5px 1.5px at 700px 120px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(2px 2px at 900px 60px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1.5px 1.5px at 1100px 200px, rgba(255,255,255,0.65), transparent);
+        radial-gradient(2px 2px at 40px 60px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1.5px 1.5px at 180px 100px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2px 2px at 340px 180px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1.5px 1.5px at 520px 70px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(2px 2px at 760px 130px, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 980px 90px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(2px 2px at 1200px 170px, rgba(255,255,255,0.6), transparent);
       background-repeat: repeat;
-      background-size: 1200px 320px;
-      opacity: 0.55;
+      background-size: 1300px 340px;
     }
 
     .container {
-      width: min(1100px, 92%);
+      width: min(1180px, 92%);
       margin: 0 auto;
-      padding: 32px 0 48px;
+      padding: 36px 0 50px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
       margin-bottom: 28px;
       flex-wrap: wrap;
     }
 
     .brand {
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      color: #fff;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      text-shadow: 0 0 18px rgba(255,255,255,0.08);
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
+      padding: 12px 18px;
       border-radius: 999px;
       background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.14);
       color: var(--muted);
-      font-size: 0.92rem;
-      backdrop-filter: blur(10px);
+      font-size: 0.95rem;
+      backdrop-filter: blur(12px);
     }
 
     .hero {
@@ -155,19 +117,19 @@ function renderHomePage() {
     .card {
       background: var(--card);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
+      border-radius: 28px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(16px);
     }
 
     .message-card {
-      padding: 34px;
+      padding: 36px;
     }
 
     .eyebrow {
       display: inline-block;
       margin-bottom: 14px;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--accent);
       letter-spacing: 1px;
@@ -175,7 +137,7 @@ function renderHomePage() {
     }
 
     h1 {
-      font-size: clamp(2rem, 4vw, 3.6rem);
+      font-size: clamp(2rem, 4vw, 3.8rem);
       line-height: 1.1;
       margin-bottom: 18px;
       font-weight: 800;
@@ -183,7 +145,7 @@ function renderHomePage() {
 
     .subtitle {
       color: var(--muted);
-      font-size: 1.05rem;
+      font-size: 1.06rem;
       line-height: 1.8;
       margin-bottom: 24px;
       max-width: 720px;
@@ -191,7 +153,7 @@ function renderHomePage() {
 
     .divider {
       height: 1px;
-      background: linear-gradient(to right, rgba(255,255,255,0.25), rgba(255,255,255,0.05));
+      background: linear-gradient(to right, rgba(255,255,255,0.24), rgba(255,255,255,0.05));
       margin: 24px 0;
       border: none;
     }
@@ -218,8 +180,8 @@ function renderHomePage() {
     .urdu-card::before {
       content: "☪";
       position: absolute;
-      right: 20px;
-      top: 10px;
+      right: 18px;
+      top: 4px;
       font-size: 120px;
       opacity: 0.06;
       color: #fff;
@@ -251,46 +213,46 @@ function renderHomePage() {
       margin-top: 24px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 22px;
     }
 
     .small-card {
-      padding: 22px;
+      padding: 30px 24px;
       text-align: center;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .small-card h3 {
-      font-size: 1.08rem;
-      margin-bottom: 10px;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
       color: #fff;
     }
 
     .small-card p {
       color: var(--muted);
-      line-height: 1.7;
-      font-size: 0.96rem;
+      line-height: 1.8;
+      font-size: 1rem;
+      max-width: 290px;
+      margin: 0 auto;
     }
 
     .icon {
-      font-size: 1.9rem;
-      margin-bottom: 12px;
+      font-size: 2rem;
+      margin-bottom: 14px;
       display: block;
     }
 
     .footer {
       text-align: center;
-      margin-top: 28px;
+      margin-top: 30px;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 0.98rem;
     }
 
-    .footer a {
-      color: #fff;
-      text-decoration: none;
-      border-bottom: 1px dashed rgba(255,255,255,0.4);
-    }
-
-    @media (max-width: 900px) {
+    @media (max-width: 920px) {
       .hero {
         grid-template-columns: 1fr;
       }
@@ -300,13 +262,18 @@ function renderHomePage() {
       }
 
       .message-card,
-      .urdu-card {
+      .urdu-card,
+      .small-card {
         padding: 24px;
       }
 
       .poetry {
         font-size: 1.3rem;
         line-height: 2;
+      }
+
+      .small-card {
+        min-height: auto;
       }
     }
   </style>
@@ -316,8 +283,8 @@ function renderHomePage() {
 
   <div class="container">
     <div class="topbar">
-      <div class="brand">Nasir Developer</div>
-      <div class="badge">🌙 Eid Special Page</div>
+      <div class="brand">Nasir Mehmood</div>
+      <div class="badge">🌙 Eid Special</div>
     </div>
 
     <section class="hero">
@@ -351,24 +318,24 @@ function renderHomePage() {
       <div class="card small-card">
         <span class="icon">🤲</span>
         <h3>Blessings</h3>
-        <p>May this Eid bring peace, mercy, and barakah to every home and every heart.</p>
+        <p>Allah kare is Eid te har ghar wich sukoon, rehmat te barkat hove.</p>
       </div>
 
       <div class="card small-card">
         <span class="icon">🏡</span>
         <h3>Family</h3>
-        <p>No matter the distance, family remains the most beautiful part of every Eid.</p>
+        <p>Chahe fasla kinna vi hove, Eid di اصل khushi hamesha family naal hondi ae.</p>
       </div>
 
       <div class="card small-card">
         <span class="icon">✨</span>
         <h3>Togetherness</h3>
-        <p>Even in pardes, prayers and memories keep loved ones close to the soul.</p>
+        <p>Pardes wich vi duawan te yaadan apneyan nu dil de qareeb rakhdiyaan ne.</p>
       </div>
     </section>
 
     <div class="footer">
-      Made with care by <a href="https://nasirdeveloper.com">nasirdeveloper.com</a>
+      Eid Mubarak from Nasir Mehmood
     </div>
   </div>
 </body>
@@ -376,203 +343,52 @@ function renderHomePage() {
   `;
 }
 
-/* =========================
-   BASIC ROUTES
-========================= */
-
-// Beautiful HTML homepage
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   res.send(renderHomePage());
 });
 
-// Keep a JSON status route too
-app.get("/api", (req, res) => {
-  res.json({
-    success: true,
-    message: `${APP_NAME} is running 🚀`,
-  });
-});
-
-app.get("/health", (req, res) => {
-  res.json({
-    success: true,
-    ok: true,
-    environment: NODE_ENV,
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  });
-});
-
-/* =========================
-   TASK ROUTES
-========================= */
-
-// GET all tasks
-app.get("/tasks", (req, res) => {
-  res.json({
-    success: true,
-    count: tasks.length,
-    data: tasks,
-  });
-});
-
-// GET one task
-app.get("/tasks/:id", (req, res) => {
-  const taskId = Number(req.params.id);
-
-  if (Number.isNaN(taskId)) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid task id",
-    });
-  }
-
-  const task = tasks.find((t) => t.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found",
-    });
-  }
-
-  res.json({
-    success: true,
-    data: task,
-  });
-});
-
-// CREATE task
-app.post("/tasks", (req, res) => {
-  const { title, completed } = req.body;
-
-  if (!title || typeof title !== "string" || !title.trim()) {
-    return res.status(400).json({
-      success: false,
-      message: "Title is required",
-    });
-  }
-
-  const newTask = {
-    id: tasks.length ? tasks[tasks.length - 1].id + 1 : 1,
-    title: title.trim(),
-    completed: typeof completed === "boolean" ? completed : false,
-    createdAt: new Date().toISOString(),
-  };
-
-  tasks.push(newTask);
-
-  res.status(201).json({
-    success: true,
-    message: "Task created",
-    data: newTask,
-  });
-});
-
-// UPDATE task
-app.put("/tasks/:id", (req, res) => {
-  const taskId = Number(req.params.id);
-
-  if (Number.isNaN(taskId)) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid task id",
-    });
-  }
-
-  const task = tasks.find((t) => t.id === taskId);
-
-  if (!task) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found",
-    });
-  }
-
-  const { title, completed } = req.body;
-
-  if (title !== undefined) {
-    if (typeof title !== "string" || !title.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid title",
-      });
-    }
-    task.title = title.trim();
-  }
-
-  if (completed !== undefined) {
-    if (typeof completed !== "boolean") {
-      return res.status(400).json({
-        success: false,
-        message: "Completed must be boolean",
-      });
-    }
-    task.completed = completed;
-  }
-
-  res.json({
-    success: true,
-    message: "Task updated",
-    data: task,
-  });
-});
-
-// DELETE task
-app.delete("/tasks/:id", (req, res) => {
-  const taskId = Number(req.params.id);
-
-  if (Number.isNaN(taskId)) {
-    return res.status(400).json({
-      success: false,
-      message: "Invalid task id",
-    });
-  }
-
-  const index = tasks.findIndex((t) => t.id === taskId);
-
-  if (index === -1) {
-    return res.status(404).json({
-      success: false,
-      message: "Task not found",
-    });
-  }
-
-  const deleted = tasks.splice(index, 1)[0];
-
-  res.json({
-    success: true,
-    message: "Task deleted",
-    data: deleted,
-  });
-});
-
-/* =========================
-   404 HANDLER
-========================= */
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
-  });
+  res.status(404).send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8" />
+      <title>404</title>
+      <style>
+        body {
+          margin: 0;
+          min-height: 100vh;
+          display: grid;
+          place-items: center;
+          background: #0f172a;
+          color: white;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        .box {
+          text-align: center;
+          padding: 30px;
+          border: 1px solid rgba(255,255,255,0.15);
+          border-radius: 20px;
+          background: rgba(255,255,255,0.05);
+        }
+        a {
+          color: #fbbf24;
+          text-decoration: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="box">
+        <h1>404</h1>
+        <p>Page not found</p>
+        <a href="/">Go back home</a>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
-/* =========================
-   GLOBAL ERROR HANDLER
-========================= */
-app.use((err, req, res, next) => {
-  console.error("Error:", err.message);
-
-  res.status(err.statusCode || 500).json({
-    success: false,
-    message: err.message || "Internal server error",
-  });
-});
-
-/* =========================
-   START SERVER
-========================= */
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(\`Server running on port \${PORT}\`);
 });
