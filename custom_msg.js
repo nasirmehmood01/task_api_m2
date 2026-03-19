@@ -283,8 +283,7 @@ function renderHomePage() {
 
   <div class="container">
     <div class="topbar">
-      <div class="brand">From Tusada bhira Nasir Mehmood</div>
-      // <div class="badge">🌙 Eid Special</div>
+      <div class="brand">From Tusada bhira Nasir Mehmood 🌙</div>
     </div>
 
     <section class="hero">
