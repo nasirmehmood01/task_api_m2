@@ -16,13 +16,13 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const APP_NAME = process.env.APP_NAME || "Task API";
 const NODE_ENV = process.env.NODE_ENV || "development";
-const NODE_ENV = process.env.USER || "Unknown";
+const USER_ENV = process.env.USER || "Unknown";
 
 console.log("Starting server...");
 console.log("PORT:", PORT);
 console.log("Environment:", NODE_ENV);
 console.log("Task API:", APP_NAME);
-console.log("USER:", NODE_ENV);
+console.log("USER:", USER_ENV);
 /* =========================
    IN-MEMORY DATA
 ========================= */
